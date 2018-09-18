@@ -301,20 +301,22 @@ def help_info():
 	print 'Parameter: ***.hpp\n'
 	print 'Output: ***.abi\n'
 	print 'Example: \n\
-    python genabi.py assetmng.hpp\n\
-    then the [assetmng.abi] will ben generated under the current directory.\n'
+    cd helloworld\n\
+    python ../gentool.py helloworld.hpp\n\
+    then the [helloworld.abi] will ben generated under the current directory.\n'
 
 	print '\n******GENERATE WASM *******\n'
 	print 'Parameter: wasm ***.cpp\n'
 	print 'Output: ***.wasm\n'
 	print 'Example: \n\
-    python genabi.py wasm assetmng.cpp\n\
-    then the [assetmng.wasm] will ben generated under the current directory.\n'
+    cd helloworld \n\
+    python ../gentool.py wasm helloworld.cpp\n\
+    then the [helloworld.wasm] will ben generated under the current directory.\n'
 	print 'Restrictions for generate wasm file\'s cpp \n\n\
-    a. Your cpp file must #include "lib/contractcomm.hpp" at first.\n\
-    b. Be sure to keep "lib" folder directly under your cpp file\'s path.\n\
-    c. Your cpp file must be under the directory which contains gentool.py\n\
-    d. If you move the \'lib\' directory onto other path, it even still reports failure as you change the include lib path in your cpp\n'
+	a. Create a new folder to save new contract file.\n\
+    a. Your cpp file must include "contractcomm.hpp" at first.\n\
+    b. Be sure to keep "lib" folder, "bin" folder , contract folder and "gentool.py" file under the same path.\n'
+    
 
 def excute_cmd(cmd):
 
