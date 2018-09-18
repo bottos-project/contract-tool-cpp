@@ -1,6 +1,6 @@
 #include "contractcomm.hpp"
 #include "string.hpp"
-#include "helloworld.hpp"
+#include "testRegUser.hpp"
 
 
 #define PARAM_MAX_LEN (2048)
