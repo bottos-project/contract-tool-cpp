@@ -8,7 +8,7 @@
       enter the contract folder, compile cpp:
       python ../gentool.py wasm helloworld.cpp
 
-      then helloworld.wasm and helloworld.wasm will be created.
+      then helloworld.wast and helloworld.wasm will be created.
 
       generate abi file:
       python ../gentool.py helloworld.hpp
