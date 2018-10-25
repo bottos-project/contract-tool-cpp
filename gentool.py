@@ -324,7 +324,7 @@ def excute_cmd(cmd):
         P.communicate()
 
 def gen_wasm(cpp_filename):
-	if not os.path.exists('%s/clang' %(BIN_PATH)) and not os.path.exists('%s/llc' %(BIN_PATH)) and not os.path.exists('%s/llvm-link' %(BIN_PATH)) and not sos.path.exists('%s/s2wasm' %(BIN_PATH)):
+	if not (os.path.exists('%s/clang' %(BIN_PATH)) and os.path.exists('%s/llc' %(BIN_PATH)) and  os.path.exists('%s/llvm-link' %(BIN_PATH)) and os.path.exists('%s/s2wasm' %(BIN_PATH))):
 		print 'Error! Please keep these files [clang | llc | llvm-link | s2wasm] under current directory.'
 		exit(1)
 	if not os.path.exists(cpp_filename):
