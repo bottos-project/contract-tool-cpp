@@ -62,6 +62,23 @@ extern "C" {
 #define PACK_STR16(VAR_NAME, ELEM_NAME) do { if (!pack_str16(ctx, VAR_NAME->ELEM_NAME, strlen(VAR_NAME->ELEM_NAME))) return 0; }while(0);
 #define PACK_STRING(VAR_NAME, ELEM_NAME) do { if (!pack_str16(ctx, VAR_NAME->ELEM_NAME.get_data(), VAR_NAME->ELEM_NAME.get_strlen())) return 0; }while(0);
 
+
+#define PACK_U128(VAR_NAME, ELEM_NAME) do { \
+    uint8_t bytesValue[U128_BYTE_LEN]; \
+    VAR_NAME->ELEM_NAME.toBytes(bytesValue); \
+    if (!pack_bin16(ctx, bytesValue, 128_BYTE_LEN)) return 0; \
+}while(0)
+
+
+#define UNPACK_128(VAR_NAME, ELEM_NAME) do { \
+    uint8_t bytesValue[U128_BYTE_LEN]; \
+    uint32_t u128MaxLen = U128_BYTE_LEN; \
+    if (!unpack_bin(ctx, bytesValue, &u128MaxLen)) return 0; \
+    VAR_NAME->ELEM_NAME.setBybytes(bytesValue); \
+}while(0)
+
+
+
 #define PACK_U256(VAR_NAME, ELEM_NAME) do { \
     uint8_t bytesValue[U256_BYTE_LEN]; \
     VAR_NAME->ELEM_NAME.toBytes(bytesValue); \
@@ -70,8 +87,8 @@ extern "C" {
 
 
 #define UNPACK_U256(VAR_NAME, ELEM_NAME) do { \
-    uint8_t bytesValue[32]; \
-    uint32_t u256MaxLen = 32; \
+    uint8_t bytesValue[U256_BYTE_LEN]; \
+    uint32_t u256MaxLen = U256_BYTE_LEN; \
     if (!unpack_bin(ctx, bytesValue, &u256MaxLen)) return 0; \
     VAR_NAME->ELEM_NAME.setBybytes(bytesValue); \
 }while(0)
