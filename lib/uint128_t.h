@@ -8,6 +8,8 @@
 #define CHAR_BIT               8
 #define SIZE128                ((sizeof(uint64_t) + sizeof(uint64_t)) * CHAR_BIT)
 
+#define U128_BYTE_LEN (16)
+
 
 #include "string.hpp"
 
@@ -195,6 +197,32 @@ class uint128_t{
 		}
 
 		return (char *)(number+i);
+	}
+
+	void toBytes(uint8_t value[U128_BYTE_LEN])	{
+		uint64_t upper, lower;
+		upper = UPPER;
+		lower = LOWER;
+		uint32_t loop;
+		for (loop = 0;loop<8;loop++)
+		{
+			value[   loop]  = (upper>>(56 - 8*loop))&0xFF;
+			value[8 +loop]  = (lower>>(56 - 8*loop))&0xFF;
+		}
+	}
+				
+	void setBybytes (uint8_t value[U128_BYTE_LEN]) {
+		uint64_t upper = 0, lower = 0;
+
+		uint32_t loop;
+		for (loop = 0;loop<8;loop++)
+		{
+			upper +=    ((uint64_t)(value[    loop]))<< (56 - 8*loop);
+			lower +=    ((uint64_t)(value[8 + loop]))<< (56 - 8*loop);
+		}			
+
+		UPPER = upper;
+		LOWER = lower;
 	}
 
 	void set(uint64_t upper, uint64_t lower) {
