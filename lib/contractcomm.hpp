@@ -70,16 +70,16 @@ extern "C" {
 #define PACK_U128(VAR_NAME, ELEM_NAME) do { \
     uint8_t bytesValue[U128_BYTE_LEN]; \
     VAR_NAME->ELEM_NAME.toBytes(bytesValue); \
-    if (!pack_bin16(ctx, bytesValue, 128_BYTE_LEN)) return 0; \
-}while(0)
+    if (!pack_bin16(ctx, bytesValue, U128_BYTE_LEN)) return 0; \
+}while(0);
 
 
-#define UNPACK_128(VAR_NAME, ELEM_NAME) do { \
+#define UNPACK_U128(VAR_NAME, ELEM_NAME) do { \
     uint8_t bytesValue[U128_BYTE_LEN]; \
     uint32_t u128MaxLen = U128_BYTE_LEN; \
     if (!unpack_bin(ctx, bytesValue, &u128MaxLen)) return 0; \
     VAR_NAME->ELEM_NAME.setBybytes(bytesValue); \
-}while(0)
+}while(0);
 
 
 
@@ -87,7 +87,7 @@ extern "C" {
     uint8_t bytesValue[U256_BYTE_LEN]; \
     VAR_NAME->ELEM_NAME.toBytes(bytesValue); \
     if (!pack_bin16(ctx, bytesValue, U256_BYTE_LEN)) return 0; \
-}while(0)
+}while(0);
 
 
 #define UNPACK_U256(VAR_NAME, ELEM_NAME) do { \
@@ -95,7 +95,7 @@ extern "C" {
     uint32_t u256MaxLen = U256_BYTE_LEN; \
     if (!unpack_bin(ctx, bytesValue, &u256MaxLen)) return 0; \
     VAR_NAME->ELEM_NAME.setBybytes(bytesValue); \
-}while(0)
+}while(0);
 
 
 #define CHECK_ACCOUNT_VALID(ACCOUNT) do { if (!isAccountExist(info->ACCOUNT)) return false;} while(0);
