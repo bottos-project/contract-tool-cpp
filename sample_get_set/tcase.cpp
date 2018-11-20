@@ -69,21 +69,6 @@ template <class T> static bool parseDBParam(char *param, uint64_t paramLen, T  &
 
 }
 
-template <class T> uint32_t parseParam(T  & para)
-{
-    char param[PARAM_MAX_LEN] = {0};
-    uint32_t paramLen = 0;
-
-    
-    paramLen = getParam(param, PARAM_MAX_LEN);
-	
-    MsgPackCtx ctx;
-    msgpack_init(&ctx, (char *)param, paramLen);
-
-
-    return unpack_struct(&ctx, &para);
-}
-
 template <class T, class K> uint32_t saveData(T& data, char *tablename, K& key)
 {
     char param[PARAM_MAX_LEN] = {0};
@@ -127,12 +112,6 @@ template <class T, class K> uint32_t getData(char *contract_name, uint64_t len_c
 	}
 	
 	return 1;
-}
-
-
-bool isMethod(const char* method, const char* input)
-{
-    return ((0 == strcmp(input, method)) ? true : false);
 }
 
 int start(char *method)

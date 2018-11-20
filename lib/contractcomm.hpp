@@ -31,9 +31,26 @@ extern "C" {
 
     uint32_t callTrx(char *contract , uint32_t contractLen, char *method, uint32_t methodLen, char *buf , uint32_t bufLen );
     bool isAccountExist(char *name,  uint32_t nameLen);
+
+    bool isMethod(const char* method, const char* input)
+    {
+        return ((0 == strcmp(input, method)) ? true : false);
+    }
+
 }
 
+template <class T> uint32_t parseParam(T  & para)
+{
+    char param[PARAM_MAX_LEN] = {0};
+    uint32_t paramLen = 0;
 
+    paramLen = getParam(param, PARAM_MAX_LEN);
+
+    MsgPackCtx ctx;
+    msgpack_init(&ctx, (char *)param, paramLen);
+
+    return unpack_struct(&ctx, &para);
+}
 
 #define EMSCRIPTEN_KEEPALIVE
 
