@@ -92,6 +92,10 @@ def write_each_struct(f, head_blank, struct_info, is_last_struct):
 						valtype = 'uint32'
 					elif valtype in ('uint64_t', 'int64_t', 'int64'):
 						valtype = 'uint64'
+					elif valtype in ('uint128_t'):
+						valtype = 'uint128'
+					elif valtype in ('uint256_t'):
+						valtype = 'uint256'
 				elif not valname:
 					valname = item.strip()
 					if '[' in valname and ']' in valname:

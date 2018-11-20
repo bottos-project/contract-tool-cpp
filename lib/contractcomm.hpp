@@ -51,12 +51,16 @@ extern "C" {
 #define UNPACK_STR(VAR_NAME, ELEM_NAME, ELEM_LEN) do { if (!unpack_str(ctx, VAR_NAME->ELEM_NAME, ELEM_LEN, &size)) return 0; }while(0);
 #define UNPACK_STRING(VAR_NAME, ELEM_NAME, ELEM_LEN) do { VAR_NAME->ELEM_NAME = string(ELEM_LEN);  if (!unpack_string(ctx, VAR_NAME->ELEM_NAME.get_data(), ELEM_LEN, &size)) return 0; }while(0);
 
+#define UNPACK_U8(VAR_NAME, ELEM_NAME) do { if (!unpack_u8(ctx, &VAR_NAME->ELEM_NAME)) return 0; }while(0); 
+#define UNPACK_U16(VAR_NAME, ELEM_NAME) do { if (!unpack_u16(ctx, &VAR_NAME->ELEM_NAME)) return 0; }while(0); 
 #define UNPACK_U32(VAR_NAME, ELEM_NAME) do { if (!unpack_u32(ctx, &VAR_NAME->ELEM_NAME)) return 0; }while(0); 
 #define UNPACK_U64(VAR_NAME, ELEM_NAME) do { if (!unpack_u64(ctx, &VAR_NAME->ELEM_NAME)) return 0; }while(0);
 #define UNPACK_ARRAY(SIZE_NUM)  do { if (!unpack_array(ctx, &size)) return 0; if (SIZE_NUM != size) return 0; }while(0);
 #define UNPACK_STRUCT(VAR_NAME, ELEM_NAME) do { if (!unpack_struct(ctx, &VAR_NAME->ELEM_NAME)) return 0; }while(0);
 
 #define PACK_ARRAY16(SIZE_NUM) do { if (!pack_array16(ctx, SIZE_NUM)) return 0; }while(0);
+#define PACK_U8(VAR_NAME, ELEM_NAME) do { if (!pack_u8(ctx, VAR_NAME->ELEM_NAME)) return 0; }while(0);
+#define PACK_U16(VAR_NAME, ELEM_NAME) do { if (!pack_u16(ctx, VAR_NAME->ELEM_NAME)) return 0; }while(0);
 #define PACK_U32(VAR_NAME, ELEM_NAME) do { if (!pack_u32(ctx, VAR_NAME->ELEM_NAME)) return 0; }while(0);
 #define PACK_U64(VAR_NAME, ELEM_NAME) do { if (!pack_u64(ctx, VAR_NAME->ELEM_NAME)) return 0; }while(0);
 #define PACK_STR16(VAR_NAME, ELEM_NAME) do { if (!pack_str16(ctx, VAR_NAME->ELEM_NAME, strlen(VAR_NAME->ELEM_NAME))) return 0; }while(0);
