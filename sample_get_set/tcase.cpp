@@ -59,60 +59,9 @@ static bool unpack_struct(MsgPackCtx *ctx, UserDetail *info)
     return 1;
 }
 
-template <class T> static bool parseDBParam(char *param, uint64_t paramLen, T  & para)
-{
-    
-    MsgPackCtx ctx;
-    msgpack_init(&ctx, (char *)param, paramLen);
 
-    return unpack_struct(&ctx, &para);
 
-}
 
-template <class T, class K> uint32_t saveData(T& data, char *tablename, K& key)
-{
-    char param[PARAM_MAX_LEN] = {0};
-    uint32_t paramLen = PARAM_MAX_LEN;
-    MsgPackCtx ctx;
-
-    msgpack_init(&ctx, (char *)param, paramLen);
-    bool packSuc = pack_struct(&ctx, &data);
-
-    if (!packSuc)
-    {
-        char pstr[] = "pack failed";
-        myprints(pstr);
-
-        return 0;
-    }
-
-    uint32_t saveLen = setBinValue(tablename, strlen(tablename), key, strlen(key), ctx.buf, ctx.pos);
-    if (0 == saveLen)
-    {
-        char pstr[] = "save db failed";
-        myprints(pstr);
-
-        return 0;
-    }
-   
-    return 1;
-}
-
-template <class T, class K> uint32_t getData(char *contract_name, uint64_t len_contract_name, char *table_name, uint64_t len_table_name,     T & keyword,  uint64_t len_keyword, K & return_data)
-{
-	char param2[PARAM_MAX_LEN] = {0};
-	uint32_t ret = getBinValue(contract_name, len_contract_name, table_name, len_table_name, keyword, len_keyword, param2, PARAM_MAX_LEN);
-
-	if (!parseDBParam<UserDetail>(param2, PARAM_MAX_LEN, return_data)) return 0;
-		
-	if (!ret)
-	{
-	    myprints("getBinValue failed!");
-	    return 0;
-	}
-	
-	return 1;
-}
 
 int start(char *method)
 {
