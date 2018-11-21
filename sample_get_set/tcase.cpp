@@ -22,7 +22,7 @@ static bool unpack_struct(MsgPackCtx *ctx, UserInfo *info)
     UNPACK_STR(info, userRole, (USER_ROLE_LEN + 1))
     
     UNPACK_U64(info, rcvHelloNum)
-	
+
     return 1;
 }
 
@@ -43,7 +43,7 @@ static bool pack_struct(MsgPackCtx *ctx, UserDetail *info)
     PACK_STR16(info, userRole)
     
     PACK_U64(info, rcvHelloNum)
-	
+
     return 1;
 }
 
@@ -55,13 +55,9 @@ static bool unpack_struct(MsgPackCtx *ctx, UserDetail *info)
     UNPACK_STR(info, userRole, (USER_ROLE_LEN + 1))
     
     UNPACK_U64(info, rcvHelloNum)
-	
+
     return 1;
 }
-
-
-
-
 
 int start(char *method)
 {
@@ -70,47 +66,47 @@ int start(char *method)
     
     if (strlen(mycontract_name) <= 0)
     {
-	myprints("ERROR: Get my contract name failed.");
-	return ERROR_GET_CONTRACT_NAME_FAIL;
+        myprints("ERROR: Get my contract name failed.");
+        return ERROR_GET_CONTRACT_NAME_FAIL;
     }
-    
+
     if ( isMethod("reguser", method) )
     {
         UserInfo userinfo = {{0}};
         UserDetail userDetail = {{0}};
-	UserDetail data2 = {{0}};	
+        UserDetail data2 = {{0}};	
         char tablename[] = "userdetail";
 
         if ( !parseParam<UserInfo>(userinfo) )  return ERROR_UNPACK_FAIL;
 
         strcpy(userDetail.userRole, userinfo.userRole);
-	userDetail.rcvHelloNum = userinfo.rcvHelloNum;
-	
+        userDetail.rcvHelloNum = userinfo.rcvHelloNum;
+
         if (!saveData(userDetail, tablename, userinfo.userName)) return ERROR_SAVE_DB_FAIL;
 
         return 0;
 
     }
-    else if (isMethod("sayhello", method))	
+    else if (isMethod("sayhello", method))
     {
-	SayHello sayhello = {{0}};
+        SayHello sayhello = {{0}};
         UserDetail userDetail = {{0}};
         char tablename[] = "userdetail";
-	UserDetail data2 = {{0}};	
-	
+        UserDetail data2 = {{0}};	
+
         if ( !parseParam<SayHello>(sayhello) )  return ERROR_UNPACK_FAIL;
-	
-	if (!getData(mycontract_name, strlen(mycontract_name), tablename,  strlen(tablename), sayhello.userName, strlen(sayhello.userName), userDetail) ){
-		myprints("getData failed!");
-		return ERROR_GET_DB_FAIL;
-	}
-	
-	userDetail.rcvHelloNum++;
+
+        if (!getData<char[USER_NAME_LEN], UserDetail>(mycontract_name, strlen(mycontract_name), tablename,  strlen(tablename), sayhello.userName, strlen(sayhello.userName), userDetail) ){
+            myprints("getData failed!");
+            return ERROR_GET_DB_FAIL;
+        }
+
+        userDetail.rcvHelloNum++;
 
         if (!saveData(userDetail, tablename, sayhello.userName)) return ERROR_SAVE_DB_FAIL;
-	
-	return 0;
-    }	
+
+        return 0;
+    }
     else
     {
         char pstr[] = "invalid method";
