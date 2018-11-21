@@ -12,8 +12,6 @@ extern "C" {
     void prints(char *str, uint32_t len);
     void printi(uint64_t u);
     uint32_t getParam(char *param, uint32_t buf_len);
-    void init();
-    int start(char* method);
 
     uint32_t getSender(char *str , uint32_t len);
     uint32_t getCtxName(char *str , uint32_t len);
