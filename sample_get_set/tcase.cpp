@@ -59,8 +59,25 @@ static bool unpack_struct(MsgPackCtx *ctx, UserDetail *info)
     return 1;
 }
 
-int start(char *method)
-{
+int reguser()
+{   
+    UserInfo userinfo = {{0}};
+    UserDetail userDetail = {{0}};
+    UserDetail data2 = {{0}};	
+    char tablename[] = "userdetail";
+
+    if ( !parseParam<UserInfo>(userinfo) )  return ERROR_UNPACK_FAIL;
+
+    strcpy(userDetail.userRole, userinfo.userRole);
+    userDetail.rcvHelloNum = userinfo.rcvHelloNum;
+
+    if (!saveData(userDetail, tablename, userinfo.userName)) return ERROR_SAVE_DB_FAIL;
+
+    return 0;
+}
+
+int sayhello()
+{  
     char mycontract_name[30] = "";
     getCtxName(mycontract_name, sizeof(mycontract_name));
     
@@ -69,48 +86,21 @@ int start(char *method)
         myprints("ERROR: Get my contract name failed.");
         return ERROR_GET_CONTRACT_NAME_FAIL;
     }
+    SayHello sayhello = {{0}};
+    UserDetail userDetail = {{0}};
+    char tablename[] = "userdetail";
+    UserDetail data2 = {{0}};	
 
-    if ( isMethod("reguser", method) )
-    {
-        UserInfo userinfo = {{0}};
-        UserDetail userDetail = {{0}};
-        UserDetail data2 = {{0}};	
-        char tablename[] = "userdetail";
+    if ( !parseParam<SayHello>(sayhello) )  return ERROR_UNPACK_FAIL;
 
-        if ( !parseParam<UserInfo>(userinfo) )  return ERROR_UNPACK_FAIL;
-
-        strcpy(userDetail.userRole, userinfo.userRole);
-        userDetail.rcvHelloNum = userinfo.rcvHelloNum;
-
-        if (!saveData(userDetail, tablename, userinfo.userName)) return ERROR_SAVE_DB_FAIL;
-
-        return 0;
-
+    if (!getData<char[USER_NAME_LEN], UserDetail>(mycontract_name, strlen(mycontract_name), tablename,  strlen(tablename), sayhello.userName, strlen(sayhello.userName), userDetail) ){
+        myprints("getData failed!");
+        return ERROR_GET_DB_FAIL;
     }
-    else if (isMethod("sayhello", method))
-    {
-        SayHello sayhello = {{0}};
-        UserDetail userDetail = {{0}};
-        char tablename[] = "userdetail";
-        UserDetail data2 = {{0}};	
 
-        if ( !parseParam<SayHello>(sayhello) )  return ERROR_UNPACK_FAIL;
+    userDetail.rcvHelloNum++;
 
-        if (!getData<char[USER_NAME_LEN], UserDetail>(mycontract_name, strlen(mycontract_name), tablename,  strlen(tablename), sayhello.userName, strlen(sayhello.userName), userDetail) ){
-            myprints("getData failed!");
-            return ERROR_GET_DB_FAIL;
-        }
+    if (!saveData(userDetail, tablename, sayhello.userName)) return ERROR_SAVE_DB_FAIL;
 
-        userDetail.rcvHelloNum++;
-
-        if (!saveData(userDetail, tablename, sayhello.userName)) return ERROR_SAVE_DB_FAIL;
-
-        return 0;
-    }
-    else
-    {
-        char pstr[] = "invalid method";
-        prints(pstr, strlen(pstr));
-        return ERROR_METHOD_INVALID;
-    }
+    return 0;
 }
