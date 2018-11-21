@@ -5,12 +5,12 @@
 
 #define PARAM_MAX_LEN (2048)
 
-#define ERROR_PACK_FAIL (-1)
-#define ERROR_UNPACK_FAIL (-2)
-#define ERROR_SAVE_DB_FAIL (-3)
-#define ERROR_METHOD_INVALID (-4)
-#define ERROR_GET_CONTRACT_NAME_FAIL (-5)
-#define ERROR_GET_DB_FAIL (-5)
+#define ERROR_PACK_FAIL (1)
+#define ERROR_UNPACK_FAIL (2)
+#define ERROR_SAVE_DB_FAIL (3)
+#define ERROR_METHOD_INVALID (4)
+#define ERROR_GET_CONTRACT_NAME_FAIL (5)
+#define ERROR_GET_DB_FAIL (6)
 
 static bool unpack_struct(MsgPackCtx *ctx, UserInfo *info)
 {

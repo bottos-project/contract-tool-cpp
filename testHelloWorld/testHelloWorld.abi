@@ -1,0 +1,19 @@
+{
+	"types": [],
+	"structs": [
+              {
+              	"name": "NullStruct",
+              	"base": "",
+              	"fields": {
+                    }
+              	}
+       ],
+	"actions": [
+              {
+              	"action_name": "start",
+              	"type": "NullStruct"
+              }
+       ],
+	"tables": [
+       ]
+}

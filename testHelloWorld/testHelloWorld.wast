@@ -195,10 +195,12 @@
   )
  )
  (func $start (param $0 i32) (result i32)
-  (call $prints
-   (i32.const 8832)
-   (i32.const 20)
+  (loop $label$0 (result i32)
+   (call $prints
+    (i32.const 8832)
+    (i32.const 20)
+   )
+   (br $label$0)
   )
-  (i32.const 0)
  )
 )

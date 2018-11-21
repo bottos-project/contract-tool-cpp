@@ -1,6 +1,7 @@
 #include "contractcomm.hpp"
+#include "testHelloWorld.hpp"
 
-int start(char* method) 
+int start() 
 {
     myprints("hello world in start");
     

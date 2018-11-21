@@ -2,6 +2,11 @@
 #define USER_INFO_LEN (20)
 
 
+
+extern "C" {
+    int reguser();
+}
+
 //@abi action reguser
 struct UserInfo {
     char userName[USER_NAME_LEN];
