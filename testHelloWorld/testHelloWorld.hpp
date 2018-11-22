@@ -1,7 +1,4 @@
 
-extern "C" {
-    int start();
-}
 
 
 //@abi action start

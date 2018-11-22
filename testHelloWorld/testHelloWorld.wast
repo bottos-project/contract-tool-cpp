@@ -6,6 +6,7 @@
  (data (i32.const 4) "\a0b\00\00")
  (data (i32.const 8832) "hello world in start\00")
  (export "memory" (memory $0))
+ (export "isMethod" (func $isMethod))
  (export "start" (func $start))
  (export "_GLOBAL__sub_I_testHelloWorld.cpp" (func $_GLOBAL__sub_I_testHelloWorld.cpp))
  (func $_GLOBAL__sub_I_testHelloWorld.cpp
@@ -194,13 +195,85 @@
    (i32.const 0)
   )
  )
- (func $start (param $0 i32) (result i32)
-  (loop $label$0 (result i32)
-   (call $prints
-    (i32.const 8832)
-    (i32.const 20)
+ (func $isMethod (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  (local $3 i32)
+  (block $label$0
+   (block $label$1
+    (br_if $label$1
+     (i32.ne
+      (tee_local $3
+       (i32.load8_u
+        (get_local $1)
+       )
+      )
+      (i32.load8_u
+       (get_local $0)
+      )
+     )
+    )
+    (set_local $1
+     (i32.add
+      (get_local $1)
+      (i32.const 1)
+     )
+    )
+    (set_local $0
+     (i32.add
+      (get_local $0)
+      (i32.const 1)
+     )
+    )
+    (loop $label$2
+     (br_if $label$0
+      (i32.eqz
+       (i32.and
+        (get_local $3)
+        (i32.const 255)
+       )
+      )
+     )
+     (set_local $2
+      (i32.load8_u
+       (get_local $0)
+      )
+     )
+     (set_local $3
+      (i32.load8_u
+       (get_local $1)
+      )
+     )
+     (set_local $1
+      (i32.add
+       (get_local $1)
+       (i32.const 1)
+      )
+     )
+     (set_local $0
+      (i32.add
+       (get_local $0)
+       (i32.const 1)
+      )
+     )
+     (br_if $label$2
+      (i32.eq
+       (get_local $3)
+       (get_local $2)
+      )
+     )
+    )
    )
-   (br $label$0)
+   (return
+    (i32.const 0)
+   )
   )
+  (i32.const 1)
+ )
+ (func $start (result i32)
+  (call $prints
+   (i32.const 8832)
+   (i32.const 20)
+  )
+  (i32.const 0)
  )
 )

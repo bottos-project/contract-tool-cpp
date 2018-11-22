@@ -1,5 +1,8 @@
 #include "contractcomm.hpp"
-#include "testHelloWorld.hpp"
+
+extern "C" {
+    int start();
+}
 
 int start() 
 {
