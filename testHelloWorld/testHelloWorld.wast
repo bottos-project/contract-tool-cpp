@@ -3,11 +3,15 @@
  (import "env" "prints" (func $prints (param i32 i32)))
  (table 0 anyfunc)
  (memory $0 1)
- (data (i32.const 4) "\a0b\00\00")
+ (data (i32.const 4) "\e0b\00\00")
  (data (i32.const 8832) "hello world in start\00")
+ (data (i32.const 8864) "hello world in add\00")
+ (data (i32.const 8896) "hello world in del\00")
  (export "memory" (memory $0))
  (export "isMethod" (func $isMethod))
  (export "start" (func $start))
+ (export "add" (func $add))
+ (export "del" (func $del))
  (export "_GLOBAL__sub_I_testHelloWorld.cpp" (func $_GLOBAL__sub_I_testHelloWorld.cpp))
  (func $_GLOBAL__sub_I_testHelloWorld.cpp
   (i64.store offset=8204 align=4
@@ -273,6 +277,20 @@
   (call $prints
    (i32.const 8832)
    (i32.const 20)
+  )
+  (i32.const 0)
+ )
+ (func $add (result i32)
+  (call $prints
+   (i32.const 8864)
+   (i32.const 18)
+  )
+  (i32.const 0)
+ )
+ (func $del (result i32)
+  (call $prints
+   (i32.const 8896)
+   (i32.const 18)
   )
   (i32.const 0)
  )

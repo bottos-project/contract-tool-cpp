@@ -1,0 +1,21 @@
+{
+	"types": [],
+	"structs": [
+              {
+              	"name": "TestStruct",
+              	"base": "",
+              	"fields": {
+              		"valueA": "uint32",
+              		"valueB": "uint32"
+                    }
+              	}
+       ],
+	"actions": [
+              {
+              	"action_name": "start",
+              	"type": "TestStruct"
+              }
+       ],
+	"tables": [
+       ]
+}

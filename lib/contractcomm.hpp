@@ -27,7 +27,7 @@ extern "C" {
 
     }
 
-    uint32_t callTrx(char *contract , uint32_t contractLen, char *method, uint32_t methodLen, char *buf , uint32_t bufLen );
+    uint32_t callTrx(char *contract, char *method, char *buf , uint32_t bufLen );
     bool isAccountExist(char *name,  uint32_t nameLen);
 
     bool isMethod(const char* method, const char* input)
@@ -159,17 +159,33 @@ template <class T> static bool parseDBParam(char *param, uint64_t paramLen, T  &
 template <class T> uint32_t getData(char *contract_name, char *table_name,  char *keyword,  T & return_data)
 {
     char param2[PARAM_MAX_LEN] = {0};
-    uint32_t len_contract_name = strlen(contract_name);
-    uint32_t len_table_name    = strlen(table_name);
-    uint32_t len_keyword       = strlen(keyword);	
-    uint32_t ret = getBinValue(contract_name, len_contract_name, table_name, len_table_name, keyword, len_keyword, param2, PARAM_MAX_LEN);
+    uint32_t ret;
+    
+    if (nullptr == contract_name) 
+    {
+        char mycontract_name[USER_NAME_MAX_LEN] = "";
+        uint32_t ctxName;
+        ctxName = getCtxName(mycontract_name, USER_NAME_MAX_LEN);
+        
+        if (strlen(mycontract_name) == 0)
+        {
+            myprints("ERROR: Get my contract name failed.");
+            return 0;
+        }
+        
+        ret = getBinValue(mycontract_name, ctxName, table_name, strlen(table_name), keyword, strlen(keyword), param2, PARAM_MAX_LEN);
+    }
+    else
+    {
+        ret = getBinValue(contract_name, strlen(contract_name), table_name, strlen(table_name), keyword, strlen(keyword), param2, PARAM_MAX_LEN);
+    }
 
     if (!parseDBParam<T>(param2, PARAM_MAX_LEN, return_data)) return 0;
 
     if (!ret)
     {
         myprints("getBinValue failed!");
-       return 0;
+        return 0;
     }
 
     return 1;
