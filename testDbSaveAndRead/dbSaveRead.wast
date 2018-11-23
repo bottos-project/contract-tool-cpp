@@ -14,16 +14,19 @@
  (import "env" "setBinValue" (func $setBinValue (param i32 i32 i32 i32 i32 i32) (result i32)))
  (table 0 anyfunc)
  (memory $0 1)
- (data (i32.const 4) "0c\00\00")
- (data (i32.const 8832) "data from input param:\00")
- (data (i32.const 8864) "testTableName\00")
- (data (i32.const 8880) "testKeyName\00")
- (data (i32.const 8896) "getData failed!\00")
- (data (i32.const 8912) "ERROR: Get my contract name failed.\00")
- (data (i32.const 8960) "getBinValue failed!\00")
- (data (i32.const 8992) "save db failed\00")
+ (data (i32.const 4) "pc\00\00")
+ (data (i32.const 8832) "hello world in contract\00")
+ (data (i32.const 8864) "data from input param:\00")
+ (data (i32.const 8896) "testTableName\00")
+ (data (i32.const 8912) "testKeyName\00")
+ (data (i32.const 8928) "data from read db:\00")
+ (data (i32.const 8960) "getData failed!\00")
+ (data (i32.const 8976) "ERROR: Get my contract name failed.\00")
+ (data (i32.const 9024) "getBinValue failed!\00")
+ (data (i32.const 9056) "save db failed\00")
  (export "memory" (memory $0))
  (export "isMethod" (func $isMethod))
+ (export "helloworld" (func $helloworld))
  (export "start" (func $start))
  (export "_GLOBAL__sub_I_dbSaveRead.cpp" (func $_GLOBAL__sub_I_dbSaveRead.cpp))
  (func $_GLOBAL__sub_I_dbSaveRead.cpp
@@ -286,6 +289,13 @@
   )
   (i32.const 1)
  )
+ (func $helloworld (result i32)
+  (call $prints
+   (i32.const 8832)
+   (i32.const 23)
+  )
+  (i32.const 0)
+ )
  (func $start (result i32)
   (local $0 i32)
   (local $1 i32)
@@ -319,7 +329,7 @@
        )
       )
       (call $prints
-       (i32.const 8832)
+       (i32.const 8864)
        (i32.const 22)
       )
       (call $printi
@@ -332,16 +342,30 @@
         (get_local $1)
        )
       )
-      (i64.store offset=40
+      (i32.store offset=40
        (get_local $1)
-       (i64.const 17179869187)
+       (i32.add
+        (i32.load offset=40
+         (get_local $1)
+        )
+        (i32.const 1)
+       )
+      )
+      (i32.store offset=44
+       (get_local $1)
+       (i32.add
+        (i32.load offset=44
+         (get_local $1)
+        )
+        (i32.const 1)
+       )
       )
       (i32.store16
        (i32.add
         (get_local $1)
         (i32.const 36)
        )
-       (i32.load16_u offset=8876 align=1
+       (i32.load16_u offset=8908 align=1
         (i32.const 0)
        )
       )
@@ -353,13 +377,13 @@
         )
         (i32.const 8)
        )
-       (i32.load offset=8872 align=1
+       (i32.load offset=8904 align=1
         (i32.const 0)
        )
       )
       (i64.store offset=24 align=4
        (get_local $1)
-       (i64.load offset=8864 align=1
+       (i64.load offset=8896 align=1
         (i32.const 0)
        )
       )
@@ -371,19 +395,19 @@
         )
         (i32.const 8)
        )
-       (i32.load offset=8888 align=1
+       (i32.load offset=8920 align=1
         (i32.const 0)
        )
       )
       (i64.store offset=12 align=4
        (get_local $1)
-       (i64.load offset=8880 align=1
+       (i64.load offset=8912 align=1
         (i32.const 0)
        )
       )
       (br_if $label$2
        (i32.eqz
-        (call $_Z8saveDataI10TestStructA12_cEjRT_PcRT0_
+        (call $_Z8saveDataI10TestStructEjRT_PcS3_
          (i32.add
           (get_local $1)
           (i32.const 40)
@@ -401,7 +425,7 @@
       )
       (br_if $label$1
        (i32.eqz
-        (call $_Z7getDataIA12_c10TestStructEjPcS2_RT_RT0_
+        (call $_Z7getDataI10TestStructEjPcS1_S1_RT_
          (i32.const 0)
          (i32.add
           (get_local $1)
@@ -417,6 +441,10 @@
          )
         )
        )
+      )
+      (call $prints
+       (i32.const 8928)
+       (i32.const 18)
       )
       (call $printi
        (i64.load32_u offset=40
@@ -444,7 +472,7 @@
     (br $label$0)
    )
    (call $prints
-    (i32.const 8896)
+    (i32.const 8960)
     (i32.const 15)
    )
    (set_local $0
@@ -637,7 +665,7 @@
   )
   (get_local $2)
  )
- (func $_Z8saveDataI10TestStructA12_cEjRT_PcRT0_ (param $0 i32) (param $1 i32) (param $2 i32) (result i32)
+ (func $_Z8saveDataI10TestStructEjRT_PcS3_ (param $0 i32) (param $1 i32) (param $2 i32) (result i32)
   (local $3 i32)
   (local $4 i32)
   (local $5 i32)
@@ -866,7 +894,7 @@
      (get_local $7)
      (i32.const 14)
     )
-    (i32.load8_u offset=9006
+    (i32.load8_u offset=9070
      (i32.const 0)
     )
    )
@@ -875,7 +903,7 @@
      (get_local $7)
      (i32.const 12)
     )
-    (i32.load16_u offset=9004 align=1
+    (i32.load16_u offset=9068 align=1
      (i32.const 0)
     )
    )
@@ -884,13 +912,13 @@
      (get_local $7)
      (i32.const 8)
     )
-    (i32.load offset=9000 align=1
+    (i32.load offset=9064 align=1
      (i32.const 0)
     )
    )
    (i64.store align=4
     (get_local $7)
-    (i64.load offset=8992 align=1
+    (i64.load offset=9056 align=1
      (i32.const 0)
     )
    )
@@ -938,7 +966,7 @@
   )
   (get_local $4)
  )
- (func $_Z7getDataIA12_c10TestStructEjPcS2_RT_RT0_ (param $0 i32) (param $1 i32) (param $2 i32) (param $3 i32) (result i32)
+ (func $_Z7getDataI10TestStructEjPcS1_S1_RT_ (param $0 i32) (param $1 i32) (param $2 i32) (param $3 i32) (result i32)
   (local $4 i32)
   (local $5 i32)
   (local $6 i32)
@@ -1278,7 +1306,7 @@
       (br $label$2)
      )
      (call $prints
-      (i32.const 8912)
+      (i32.const 8976)
       (i32.const 35)
      )
      (br $label$1)
@@ -1398,7 +1426,7 @@
         (get_local $6)
        )
        (call $prints
-        (i32.const 8960)
+        (i32.const 9024)
         (i32.const 19)
        )
        (br $label$1)

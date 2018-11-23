@@ -8,6 +8,14 @@
               		"valueA": "uint32",
               		"valueB": "uint32"
                     }
+              	},
+              {
+              	"name": "SaveStruct",
+              	"base": "",
+              	"fields": {
+              		"valueA": "uint32",
+              		"valueB": "uint32"
+                    }
               	}
        ],
 	"actions": [
@@ -17,5 +25,16 @@
               }
        ],
 	"tables": [
+              {
+              	"table_name": "testTableName",
+              	"index_type": "string",
+              	"key_names":  [
+              		"keyName"
+              	 ],
+              	"key_types":  [
+              		"string"
+              	 ],
+              	"type": "SaveStruct"
+              }
        ]
 }

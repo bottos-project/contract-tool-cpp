@@ -1,5 +1,7 @@
 #include "contractcomm.hpp"
 #include "dbSaveRead.hpp"
+
+#define EXEC_SUCC (0)
 #define ERROR_PACK_FAIL (1)
 #define ERROR_UNPACK_FAIL (2)
 #define ERROR_SAVE_DB_FAIL (3)    
@@ -29,6 +31,13 @@ static bool pack_struct(MsgPackCtx *ctx, TestStruct *info)
     return true;
 }
 
+int helloworld() 
+{
+    myprints("hello world in contract");
+    
+    return EXEC_SUCC;
+}
+
 int start() 
 {
     TestStruct testStruct = {{0}};
@@ -39,8 +48,8 @@ int start()
     printi(testStruct.valueA);
     printi(testStruct.valueB);
 
-    testStruct.valueA = 3;
-    testStruct.valueB = 4;
+    testStruct.valueA += 1;
+    testStruct.valueB += 1;
 
     char tableName[] = "testTableName";
     char keyName[] = "testKeyName";
@@ -52,9 +61,11 @@ int start()
         myprints("getData failed!");
         return ERROR_GET_DB_FAIL;
     }
-
+    
+    myprints("data from read db:");
     printi(testStruct.valueA);
     printi(testStruct.valueB);
 
-    return 0;
+    return EXEC_SUCC;
 }
+
