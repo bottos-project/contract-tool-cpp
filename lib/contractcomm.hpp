@@ -117,7 +117,7 @@ template <class T> uint32_t parseParam(T  & para)
 
 
 
-template <class T, class K> uint32_t saveData(T& data, char *tablename, K& key)
+template <class T> uint32_t saveData(T& data, char *tablename, char *key)
 {
     char param[PARAM_MAX_LEN] = {0};
     uint32_t paramLen = PARAM_MAX_LEN;
@@ -156,12 +156,15 @@ template <class T> static bool parseDBParam(char *param, uint64_t paramLen, T  &
 
 }
 
-template <class T, class K> uint32_t getData(char *contract_name, uint64_t len_contract_name, char *table_name, uint64_t len_table_name,     T & keyword,  uint64_t len_keyword, K & return_data)
+template <class T> uint32_t getData(char *contract_name, char *table_name,  char *keyword,  T & return_data)
 {
     char param2[PARAM_MAX_LEN] = {0};
+    uint32_t len_contract_name = strlen(contract_name);
+    uint32_t len_table_name    = strlen(table_name);
+    uint32_t len_keyword       = strlen(keyword);	
     uint32_t ret = getBinValue(contract_name, len_contract_name, table_name, len_table_name, keyword, len_keyword, param2, PARAM_MAX_LEN);
 
-    if (!parseDBParam<K>(param2, PARAM_MAX_LEN, return_data)) return 0;
+    if (!parseDBParam<T>(param2, PARAM_MAX_LEN, return_data)) return 0;
 
     if (!ret)
     {

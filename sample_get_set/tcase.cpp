@@ -60,25 +60,25 @@ static bool unpack_struct(MsgPackCtx *ctx, UserDetail *info)
 }
 
 int reguser()
-{   
+{
     UserInfo userinfo = {{0}};
     UserDetail userDetail = {{0}};
-    UserDetail data2 = {{0}};	
-    char tablename[] = "userdetail";
+    UserDetail data2 = {{0}};
+    char tablename[TABLE_NAME_LEN] = "userdetail";
 
     if ( !parseParam<UserInfo>(userinfo) )  return ERROR_UNPACK_FAIL;
 
     strcpy(userDetail.userRole, userinfo.userRole);
     userDetail.rcvHelloNum = userinfo.rcvHelloNum;
 
-    if (!saveData(userDetail, tablename, userinfo.userName)) return ERROR_SAVE_DB_FAIL;
+    if (!saveData<UserDetail>(userDetail, tablename, userinfo.userName)) return ERROR_SAVE_DB_FAIL;
 
     return 0;
 }
 
 int sayhello()
-{  
-    char mycontract_name[30] = "";
+{
+    char mycontract_name[CONTRACT_NAME_LEN] = "";
     getCtxName(mycontract_name, sizeof(mycontract_name));
     
     if (strlen(mycontract_name) <= 0)
@@ -86,21 +86,21 @@ int sayhello()
         myprints("ERROR: Get my contract name failed.");
         return ERROR_GET_CONTRACT_NAME_FAIL;
     }
+    
     SayHello sayhello = {{0}};
     UserDetail userDetail = {{0}};
-    char tablename[] = "userdetail";
-    UserDetail data2 = {{0}};	
+    char tablename[TABLE_NAME_LEN] = "userdetail";
+    UserDetail data2 = {{0}};
 
     if ( !parseParam<SayHello>(sayhello) )  return ERROR_UNPACK_FAIL;
 
-    if (!getData<char[USER_NAME_LEN], UserDetail>(mycontract_name, strlen(mycontract_name), tablename,  strlen(tablename), sayhello.userName, strlen(sayhello.userName), userDetail) ){
+    if (!getData<UserDetail>(mycontract_name, tablename,  sayhello.userName,  userDetail) )    {
         myprints("getData failed!");
         return ERROR_GET_DB_FAIL;
     }
 
     userDetail.rcvHelloNum++;
-
-    if (!saveData(userDetail, tablename, sayhello.userName)) return ERROR_SAVE_DB_FAIL;
+    if (!saveData<UserDetail>(userDetail, tablename, sayhello.userName)) return ERROR_SAVE_DB_FAIL;
 
     return 0;
 }

@@ -1,5 +1,7 @@
 #define USER_NAME_LEN (20)
 #define USER_ROLE_LEN (20)
+#define CONTRACT_NAME_LEN (20)
+#define TABLE_NAME_LEN (20)
 
 //method func declaration to vm
 extern "C" {
