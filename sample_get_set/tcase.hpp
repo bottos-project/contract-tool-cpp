@@ -23,7 +23,7 @@ struct SayHello {
 
 
 
-//@abi table userinfo:[index_type:string, key_names:userName, key_types:string]
+//@abi table userdetail:[index_type:string, key_names:userName, key_types:string]
 struct UserDetail {
     char userRole[USER_ROLE_LEN];
     uint64_t rcvHelloNum;
