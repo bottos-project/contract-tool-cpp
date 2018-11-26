@@ -11,6 +11,9 @@ struct_array     = []
 abi_action_array = []
 abi_table_container = []
 
+pack_function = list()
+unpack_function = list()
+
 def write_each_table(f, head_blank, table_dict, is_last_table):
 	inside_blank = '	'
 	
@@ -316,9 +319,9 @@ def help_info():
     cd helloworld \n\
     python ../gentool.py wasm helloworld.cpp\n\
     then the [helloworld.wasm] will ben generated under the current directory.\n'
-	print 'Restrictions for generate wasm file\'s cpp \n\n\
-	a. Create a new folder to save new contract file.\n\
-    a. Your cpp file must include "contractcomm.hpp" at first.\n\
+    	print 'Restrictions for generate wasm file\'s cpp \n\n\
+    a. Create a new folder to save new contract file.\n\
+    b. Your cpp file must include "contractcomm.hpp" at first.\n\
     b. Be sure to keep "lib" folder, "bin" folder , contract folder and "gentool.py" file under the same path.\n'
     
 
@@ -372,6 +375,199 @@ def gen_wasm(cpp_filename):
 	if os.path.isdir(tmpdir):
 		shutil.rmtree(tmpdir)
 	
+types = ('uint', 'uint8', 'uint16', 'uint32', 'uint64', 'uint128', 'uint256', 'bytes',
+	 'uint8_t', 'uint16_t', 'uint32_t', 'uint64_t', 'uint128_t', 'uint256_t',
+	 'char', 'string',
+	 'bool',
+	 'long')	
+
+contract_struct_map = dict()
+contract_action_map = dict()
+
+contract_structs_name  = dict()
+contract_table_map     = dict()
+contract_table_struct_map = dict()
+special_types_value = dict()
+
+def putdown_pack_code(key, value, pack_function, unpack_function, base):
+	if key in ('uint8', 'uint8_t'):
+		PACK_VAL = '	PACK_U8'
+		UNPACK_VAL = '	UNPACK_U8'
+	elif key in ('uint16', 'uint16_t'):
+		PACK_VAL = '	PACK_U16'
+		UNPACK_VAL = '	UNPACK_U16'
+	elif key in ('uint32', 'uint32_t'):
+		PACK_VAL = '	PACK_U32'
+		UNPACK_VAL = '	UNPACK_U32'
+	elif key in ('uint8', 'uint64', 'uint64_t', 'long'):
+		PACK_VAL = '	PACK_U64'
+		UNPACK_VAL = '	UNPACK_U64'
+	elif key in ('uint128', 'uint128_t'):
+		PACK_VAL = '	PACK_U128'
+		UNPACK_VAL = '	UNPACK_U128'
+	elif key in ('uint256', 'uint256_t'):
+		PACK_VAL = '	PACK_U256'
+		UNPACK_VAL = '	UNPACK_U256'
+	elif key in 'bytes':
+		PACK_VAL = '	PACK_BIN'
+		UNPACK_VAL = '	UNPACK_BIN'
+	elif key in 'char':
+		PACK_VAL = '	PACK_STR16'
+		UNPACK_VAL = '	UNPACK_STR'
+		if '[' in value:
+			value = value.split('[')[0]
+		pack_function.append(PACK_VAL + '(' + base + ', ' + value +')\n')
+		unpack_function.append(UNPACK_VAL + '(' + base + ', ' + value +', USER_NAME_LEN + 1)\n')
+		return
+	elif key in 'string':
+		PACK_VAL = '	PACK_STRING'
+		UNPACK_VAL = '	UNPACK_STRING'
+		if '[' in value:
+			value = value.split('[')[0]
+		pack_function.append(PACK_VAL + '(' + base + ', ' + value +')\n')
+		unpack_function.append(UNPACK_VAL + '(' + base + ', ' + value +',  USER_NAME_LEN + 1)\n')
+		return
+	else:
+		print 'unsupported struct key %s! ' %key
+		exit(1)	
+
+	pack_function.append(PACK_VAL + '(' + base + ', ' + value +')\n')
+	unpack_function.append(UNPACK_VAL + '(' + base + ', ' + value +')\n')
+
+def handle_tuples(tuple_value, pack_function, unpack_function, base='info'):
+	is_need_end = True
+	for key, value in tuple_value:
+		if key in types:
+			putdown_pack_code(key, value, pack_function, unpack_function, base)
+		
+		elif contract_structs_name.has_key(key):
+			is_need_end = False
+			tuple_value = contract_structs_name[key]
+			
+			if special_types_value.has_key(key):
+				special_val_name = special_types_value[key]
+			else:
+				print 'Error! type [%s] not found!'
+				exit(1)
+			handle_tuples(tuple_value, pack_function, unpack_function, '(&' + base + '->' + special_val_name + ')')
+		else:			
+			print 'Unsupported struct [%s] in your hpp!' %key
+			exit(1)
+	
+	if is_need_end == True:
+		pack_function.append('	return 1;\n')	
+		unpack_function.append('	return 1;\n')	
+		pack_function.append('}\n')
+		unpack_function.append('}\n')
+
+def write_common_hpp(action_name, input_hpp, struct_name_map, struct_value_map):
+	
+	struct_name = struct_name_map[action_name]
+	tuple_value = struct_value_map[action_name]
+
+	pack_function.append('static bool   pack_struct(MsgPackCtx *ctx, '   + struct_name + ' *info) {\n')
+	pack_function.append('	uint32_t size = 0;\n')
+	
+	pack_function.append('	PACK_ARRAY16(' + str(len(tuple_value)) + ')\n')
+	
+	unpack_function.append('static bool unpack_struct(MsgPackCtx *ctx, ' + struct_name + ' *info) {\n')
+	unpack_function.append('	uint32_t size = 0;\n')
+	
+	unpack_function.append('	UNPACK_ARRAY(' + str(len(tuple_value)) + ')\n')
+	
+	handle_tuples(tuple_value, pack_function, unpack_function)
+	
+	return copy.copy(pack_function), copy.copy(unpack_function)
+
+def gen_common_hpp(input_hpp, output_hpp):
+	
+	with open(input_hpp, 'r') as f:
+		fileinfo = f.readlines()
+	
+	start  = False
+	action = False
+	table  = False
+	action_name = ''
+	struct_name = ''	
+	
+	for line in fileinfo:
+		if '@abi ' and 'action ' in line:
+			action_start = True
+			action_name = line.split()[2]
+			contract_struct_map[action_name] = list()
+			continue
+		elif '@abi ' and 'table ' in line: 
+			table_start = True
+			table_name = line.split()[2].split(':')[0]
+			contract_table_struct_map[table_name] = list()
+			continue
+
+		if 'struct ' in	line:
+			start = True
+			struct_name = line.split()[1]
+			contract_structs_name[struct_name] = list()
+				
+			continue
+		if '{' in line:
+			continue
+		if '}' in line:
+			start = False
+			action_start = False
+			table_start = False
+			continue
+		
+		if start is False:
+			continue
+			
+		code_line = line.split(';')[0].split()
+		if len(code_line) != 2:
+			print 'error in line [%s] ! Please check your hpp file of %s.' %(line, input_hpp)
+			print '\nNote: 1. Do not use macro instead of your variable\'s type definition.'\
+			      '	       2. Currently we donnot support: long long | pointer * | reference & in your contract hpp files.\n'
+			exit(1)
+		
+		
+		if start is True:
+			_type, _val = code_line
+			
+			if not _type in types:
+				special_types_value[_type] = _val
+
+			contract_structs_name[struct_name].append((_type, _val))
+			if action_start is True:
+				#print 'LINE:', line
+				#print 'ACTION NAME: ', action_name, ", APPEND: ", (_type, _val)
+
+				contract_struct_map[action_name].append((_type, _val))
+				contract_action_map[action_name] = struct_name
+			
+			elif table_start is True:
+				contract_table_map[table_name] = struct_name
+				contract_table_struct_map[table_name].append((_type, _val))	
+	
+	for action_key in contract_action_map:
+			pack_func, unpack_func = write_common_hpp(action_key, input_hpp, contract_action_map, contract_struct_map)
+	
+	if len(pack_function) > 0:
+		del pack_function[:]
+	if len(unpack_function) > 0:
+		del unpack_function[:]
+	
+	for table_key in contract_table_map:
+			pack_func2, unpack_func2 = write_common_hpp(table_key, input_hpp, contract_table_map, contract_table_struct_map)
+	
+	with open(output_hpp, 'w') as f:
+		for line in pack_func:
+			f.write(line)
+		for line in unpack_func:
+			f.write(line)
+		for line in pack_func2:
+			f.write(line)
+		for line in unpack_func2:
+			f.write(line)
+	
+	print '\n===== Put all pack and unpack information into common.hpp done. Please have a check your common.hpp file.\n'
+					
 if __name__ == '__main__':
 	if len(sys.argv) > 1:
 		if sys.argv[1] == 'wasm':
@@ -386,6 +582,16 @@ if __name__ == '__main__':
 				exit(1)
 		
 			gen_wasm(sys.argv[2])
+			exit(0)
+		if sys.argv[1] == 'common':
+			if len(sys.argv) != 3:
+                                help_info()
+                        	exit(1)
+			if '.hpp' not in sys.argv[2]:
+				print 'Please input your hpp file.'
+				exit(1)
+			hpp_file = sys.argv[2]
+			gen_common_hpp(hpp_file, 'common.hpp')
 			exit(0)
 	
 	if len(sys.argv) <= 1 or len(sys.argv) > 2 or sys.argv[1].lower() == 'help':
@@ -433,4 +639,6 @@ if __name__ == '__main__':
 						print each_table_line,'\n'
 				#print ')'
 			else:
-				print each_item 
+				print each_item
+
+
