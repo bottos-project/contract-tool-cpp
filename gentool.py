@@ -311,6 +311,18 @@ def help_info():
     cd helloworld\n\
     python ../gentool.py helloworld.hpp\n\
     then the [helloworld.abi] will ben generated under the current directory.\n'
+	
+	print '\n******GENERATE YOUR COMMON.HPP FILE *******\n'
+	print 'Parameter: common ***.hpp\n'
+	print 'Output: common.hpp\n'
+	print 'Example: \n\
+    cd sample_get_set \n\
+    python ../gentool.py common sample_get_set.hpp\n\
+    then the [common.hpp] will ben generated under the current directory.\n'
+    	print 'Restrictions for generate wasm file\'s cpp \n\n\
+    a. Create a new folder to save new contract file.\n\
+    b. Your must write \" #include \"common.hpp\" as the last be included hpp header in your **.cpp file\'s include headers.\n\
+    b. Be sure to keep "lib" folder, "bin" folder , contract folder and "gentool.py" file under the same path.\n'
 
 	print '\n******GENERATE WASM *******\n'
 	print 'Parameter: wasm ***.cpp\n'
