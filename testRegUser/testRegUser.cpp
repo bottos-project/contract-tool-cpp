@@ -17,7 +17,7 @@ static bool unpack_struct(MsgPackCtx *ctx, UserInfo *info)
     UNPACK_STR(info, userName, (USER_NAME_LEN+1))
     UNPACK_STR(info, userInfo, (USER_INFO_LEN+1))
     
-    return 1;
+    return true;
 }
 
 static bool pack_struct(MsgPackCtx *ctx, UserBaseInfo *info)
@@ -25,7 +25,7 @@ static bool pack_struct(MsgPackCtx *ctx, UserBaseInfo *info)
     PACK_ARRAY16(1)
     PACK_STR16(info, userInfo )
 
-    return 1;
+    return true;
 }
 
 int reguser() 
@@ -33,6 +33,9 @@ int reguser()
     UserInfo userinfo = {{0}};
     
     if ( !parseParam<UserInfo>(userinfo) )  return ERROR_UNPACK_FAIL;
+
+    myprints(userinfo.userName);
+    myprints(userinfo.userInfo);
 
     UserBaseInfo userBaseInfo = {{0}};
     

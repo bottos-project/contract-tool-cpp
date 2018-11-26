@@ -5,7 +5,7 @@
       
 ## Compile
 
-      enter the contract folder, compile cpp:
+      enter the contract folder, for example "cd testHelloWorld", then compile cpp:
       python ../gentool.py wasm helloworld.cpp
 
       then helloworld.wast and helloworld.wasm will be created.

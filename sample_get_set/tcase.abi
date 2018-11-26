@@ -38,7 +38,7 @@
        ],
 	"tables": [
               {
-              	"table_name": "userinfo",
+              	"table_name": "userdetail",
               	"index_type": "string",
               	"key_names":  [
               		"userName"
