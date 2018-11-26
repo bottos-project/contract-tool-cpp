@@ -317,7 +317,7 @@ def help_info():
 	print 'Output: common.hpp\n'
 	print 'Example: \n\
     cd sample_get_set \n\
-    python ../gentool.py common sample_get_set.hpp\n\
+    python ../gentool.py common tcase.hpp\n\
     then the [common.hpp] will ben generated under the current directory.\n'
     	print 'Restrictions for generate wasm file\'s cpp \n\n\
     a. Create a new folder to save new contract file.\n\
