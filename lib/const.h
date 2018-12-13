@@ -9,7 +9,7 @@ extern "C" {
     const int MAX_CONTENT_LEN = 256;
 
     const int PARAM_MAX_LEN = 2048;
-    const int USER_NAME_MAX_LEN  = 16;
+    const int USER_NAME_MAX_LEN  = 31;
 
     const int SESSION_ID_LEN = 20;
 
