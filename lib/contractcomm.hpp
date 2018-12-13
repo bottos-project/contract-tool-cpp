@@ -30,10 +30,6 @@ extern "C" {
     uint32_t callTrx(char *contract, char *method, char *buf , uint32_t bufLen );
     bool isAccountExist(char *name,  uint32_t nameLen);
 
-    bool isMethod(const char* method, const char* input)
-    {
-        return ((0 == strcmp(input, method)) ? true : false);
-    }
 
 }
 
