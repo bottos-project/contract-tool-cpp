@@ -69,6 +69,19 @@ template <class T> uint32_t parseParam(T  & para)
 #define UNPACK_ARRAY(SIZE_NUM)  do { if (!unpack_array(ctx, &size)) return 0; if (SIZE_NUM != size) return 0; }while(0);
 #define UNPACK_STRUCT(VAR_NAME, ELEM_NAME) do { if (!unpack_struct(ctx, &VAR_NAME->ELEM_NAME)) return 0; }while(0);
 
+#define UNPACK_BIN(VAR_NAME, ELEM_NAME) do { \
+    uint8_t bytesValue[1000]; \
+    uint32_t u128MaxLen = 1000; \
+    if (!unpack_bin(ctx, bytesValue, &u128MaxLen)) return 0; \
+    VAR_NAME->ELEM_NAME.setBybytes(bytesValue); \
+while(0);
+
+#define PACK_BIN(VAR_NAME, ELEM_NAME) do { \
+    uint8_t bytesValue[1000]; \
+    VAR_NAME->ELEM_NAME.toBytes(bytesValue); \
+    if (!pack_bin16(ctx, bytesValue, 1000)) return 0; \
+}while(0);
+
 #define PACK_ARRAY16(SIZE_NUM) do { if (!pack_array16(ctx, SIZE_NUM)) return 0; }while(0);
 #define PACK_U8(VAR_NAME, ELEM_NAME) do { if (!pack_u8(ctx, VAR_NAME->ELEM_NAME)) return 0; }while(0);
 #define PACK_U16(VAR_NAME, ELEM_NAME) do { if (!pack_u16(ctx, VAR_NAME->ELEM_NAME)) return 0; }while(0);
