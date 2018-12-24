@@ -172,9 +172,9 @@ template <class T> uint32_t getData(char *contract_name, char *table_name,  char
     
     if (nullptr == contract_name) 
     {
-        char mycontract_name[USER_NAME_MAX_LEN] = "";
+        char mycontract_name[USER_NAME_MAX_LEN+1] = "";
         uint32_t ctxName;
-        ctxName = getCtxName(mycontract_name, USER_NAME_MAX_LEN);
+        ctxName = getCtxName(mycontract_name, USER_NAME_MAX_LEN+1);
         
         if (strlen(mycontract_name) == 0)
         {
