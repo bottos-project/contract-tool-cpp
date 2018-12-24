@@ -561,7 +561,8 @@ def gen_common_hpp(input_hpp, output_hpp):
 			elif table_start is True:
 				contract_table_map[table_name] = struct_name
 				contract_table_struct_map[table_name].append((_type, _val))
-
+	pack_func = []
+	unpack_func = []
 	for action_key in contract_action_map:
 			pack_func, unpack_func = write_common_hpp(action_key, input_hpp, contract_action_map, contract_struct_map)
 
@@ -570,6 +571,8 @@ def gen_common_hpp(input_hpp, output_hpp):
 	if len(unpack_function) > 0:
 		del unpack_function[:]
 
+	pack_func2 = []
+	unpack_func2 = []
 	for table_key in contract_table_map:
 			pack_func2, unpack_func2 = write_common_hpp(table_key, input_hpp, contract_table_map, contract_table_struct_map)
 
