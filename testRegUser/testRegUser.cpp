@@ -41,7 +41,7 @@ int reguser()
     
     strcpy(userBaseInfo.userInfo, userinfo.userInfo);
 
-    char tablename[] = "userreginfo"; 
+    char tablename[] = "userinfo"; 
 
     if (!saveData(userBaseInfo, tablename, userinfo.userName)) return ERROR_SAVE_DB_FAIL;
             
