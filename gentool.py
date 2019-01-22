@@ -440,7 +440,8 @@ def putdown_pack_code(key, value, pack_function, unpack_function, base):
 		if '[' in value:
 			value = value.split('[')[0]
 		pack_function.append(PACK_VAL + '(' + base + ', ' + value +')\n')
-		unpack_function.append(UNPACK_VAL + '(' + base + ', ' + value +',  USER_NAME_LEN + 1)\n')
+		#unpack_function.append(UNPACK_VAL + '(' + base + ', ' + value +',  USER_NAME_LEN + 1)\n')
+		unpack_function.append(UNPACK_VAL + '(' + base + ', ' + value + ')\n')
 		return
 	else:
 		print 'unsupported struct key %s! ' %key
