@@ -15,6 +15,9 @@ extern "C" {
 
     uint32_t getSender(char *str , uint32_t len);
     uint32_t getCtxName(char *str , uint32_t len);
+    uint32_t getMethod(char *str , uint32_t len);
+    uint32_t getSelfName(char *str , uint32_t len);
+    
 
     static inline void myprints(char *s) 
     {
@@ -60,7 +63,10 @@ template <class T> uint32_t parseParam(T  & para)
 
 
 #define UNPACK_STR(VAR_NAME, ELEM_NAME, ELEM_LEN) do { if (!unpack_str(ctx, VAR_NAME->ELEM_NAME, ELEM_LEN, &size)) return 0; }while(0);
-#define UNPACK_STRING(VAR_NAME, ELEM_NAME, ELEM_LEN) do { VAR_NAME->ELEM_NAME = string(ELEM_LEN);  if (!unpack_string(ctx, VAR_NAME->ELEM_NAME.get_data(), ELEM_LEN, &size)) return 0; }while(0);
+#define UNPACK_STRING(VAR_NAME, ELEM_NAME) do { \
+char buffer[1000]; \
+ if (!unpack_string(ctx, buffer, 1000, &size)) return 0;  \
+ VAR_NAME->ELEM_NAME.assign(buffer, size+1, true); }while(0);
 
 #define UNPACK_U8(VAR_NAME, ELEM_NAME) do { if (!unpack_u8(ctx, &VAR_NAME->ELEM_NAME)) return 0; }while(0); 
 #define UNPACK_U16(VAR_NAME, ELEM_NAME) do { if (!unpack_u16(ctx, &VAR_NAME->ELEM_NAME)) return 0; }while(0); 
@@ -76,8 +82,10 @@ template <class T> uint32_t parseParam(T  & para)
     VAR_NAME->ELEM_NAME.setBybytes(bytesValue); \
 while(0);
 
+uint8_t bytesValue[1000];
+
 #define PACK_BIN(VAR_NAME, ELEM_NAME) do { \
-    uint8_t bytesValue[1000]; \
+     \
     VAR_NAME->ELEM_NAME.toBytes(bytesValue); \
     if (!pack_bin16(ctx, bytesValue, 1000)) return 0; \
 }while(0);
