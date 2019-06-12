@@ -97,6 +97,7 @@ uint8_t bytesValue[1000];
 #define PACK_U64(VAR_NAME, ELEM_NAME) do { if (!pack_u64(ctx, VAR_NAME->ELEM_NAME)) return 0; }while(0);
 #define PACK_STR16(VAR_NAME, ELEM_NAME) do { if (!pack_str16(ctx, VAR_NAME->ELEM_NAME, strlen(VAR_NAME->ELEM_NAME))) return 0; }while(0);
 #define PACK_STRING(VAR_NAME, ELEM_NAME) do { if (!pack_str16(ctx, VAR_NAME->ELEM_NAME.get_data(), VAR_NAME->ELEM_NAME.get_strlen())) return 0; }while(0);
+#define PACK_STRUCT(VAR_NAME, ELEM_NAME) do { if (!pack_struct(ctx, &VAR_NAME->ELEM_NAME)) return 0; }while(0);
 
 
 #define PACK_U128(VAR_NAME, ELEM_NAME) do { \
